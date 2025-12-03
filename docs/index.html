@@ -27,8 +27,10 @@
             margin: 20px;
         }
 
+        #startScreen,
         #sleepingVideoSection,
-        #locationSection {
+        #locationSection,
+        #wakeUpVideoSection {
             display: none;
         }
 
@@ -136,6 +138,14 @@
         </video>
     </div>
 
+    <!-- Wake Up video -->
+    <div class="container" id="wakeUpVideoSection">
+        <video muted playsinline autoplay controls onended="showLocation(0)">
+            <source src="images/wakeup.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
     <!-- Location Section -->
     <div class="container" id="locationSection">
         <h1 id="locationTitle"></h1>
@@ -150,9 +160,9 @@
         </div>
 
         <div class="buttons-container">
-            <button class="action-button" onclick="wakeUp()">Wake Up</button>
-            <button class="action-button" onclick="prevLocation()">Previous</button>
-            <button class="action-button" onclick="nextLocation()">Next</button>
+            <button class="action-button" id="wakeUpButton" onclick="goWakeUp()">Wake Up</button>
+            <button class="action-button" id="prevButton" onclick="prevLocation()">Previous</button>
+            <button class="action-button" id="nextButton" onclick="nextLocation()">Next</button>
         </div>
     </div>
 
@@ -161,55 +171,55 @@
             {
                 name: "Gate",
                 image: "images/main_gate.png",
-                description: "I woke to find myself in a serene Chinese garden. The morning mist hugged the curved roofs, lanterns swayed gently, and the air smelled of jasmine. A feeling of calm and wonder filled me, as if the book I read guided me here.",
+                description: "I woke to find myself in a serene Chinese garden. The morning mist hugged the curved roofs, lanterns swayed gently, and the air smelled of jasmine. A feeling of calm and wonder filled me, as if the book I read guided me here. I stepped closer to the gate, listening to the faint rustle of bamboo leaves and the distant sound of water trickling.",
                 poem: "I slept, and drifted into dreams,\nWhere ponds reflected bamboo streams.\nInspired by the Craft of Gardens,\nEach stone and gate wove gentle themes."
             },
             {
                 name: "Courtyard",
                 image: "images/courtyard.png",
-                description: "The courtyard was open and peaceful, surrounded by elegant arches and potted bonsai. Light filtered softly through the paper lanterns.",
+                description: "The courtyard was open and peaceful, surrounded by elegant arches and potted bonsai. Light filtered softly through the paper lanterns, painting intricate patterns on the ground. I walked slowly, savoring the gentle fragrance of flowers and the warm sunlight that touched my face.",
                 poem: "Stepping lightly on the stones,\nEchoes of silence and calm tones.\nA courtyard embraced my wandering mind,\nIn its stillness, peace I find."
             },
             {
                 name: "Walkway",
                 image: "images/walkway.png",
-                description: "A narrow walkway lined with bamboo guided me deeper into the garden, each step resonating softly underfoot.",
+                description: "A narrow walkway lined with bamboo guided me deeper into the garden. Each step resonated softly underfoot, as birds sang hidden melodies above. The path twisted and turned, revealing small glimpses of tranquil ponds and flower beds, inviting me to continue the journey.",
                 poem: "Bamboo sways and whispers low,\nAlong the path where footsteps go.\nA journey subtle, winding, clear,\nNature's voice I softly hear."
             },
             {
                 name: "Pond",
                 image: "images/pond.png",
-                description: "A reflective pond mirrored the sky, koi swam lazily, and lotus flowers floated serenely.",
+                description: "A reflective pond mirrored the sky, koi swam lazily, and lotus flowers floated serenely. The water shimmered with sunlight, and I paused to admire the gentle ripples. Dragonflies hovered above, and the subtle scent of lotus filled the air.",
                 poem: "Water glistens, calm and deep,\nLotus blooms in silence sleep.\nKoi dance gently, weaving grace,\nReflections glow upon their space."
             },
             {
                 name: "Pavilion",
                 image: "images/pavilion.png",
-                description: "A quiet pavilion provided a space to pause, with wooden beams carved in delicate patterns.",
+                description: "A quiet pavilion provided a space to pause. Its wooden beams were carved in delicate patterns, and the roof offered shelter from the gentle breeze. I sat on the polished floor, taking in the serenity and feeling completely embraced by the garden.",
                 poem: "Beneath the pavilion's roof,\nI found a moment, clear and proof.\nWood and stone in harmony,\nA tranquil pause, a gentle plea."
             },
             {
                 name: "Grotto",
                 image: "images/grotto.png",
-                description: "A hidden grotto with moss-covered stones offered a mysterious charm.",
+                description: "A hidden grotto with moss-covered stones offered a mysterious charm. Stalactites dripped softly into a small pool, and shadows danced along the walls. I leaned in, feeling the cool air and listening to the gentle echoes, lost in contemplation.",
                 poem: "In the grotto's quiet shade,\nSecrets of the garden laid.\nMoss and shadow, cool and deep,\nWhisper stories mine to keep."
             },
             {
                 name: "Scholar",
                 image: "images/scholar.png",
-                description: "A scholar's study by the bamboo grove, filled with scrolls and ink brushes.",
+                description: "A scholar's study by the bamboo grove was filled with scrolls, ink brushes, and delicate carvings. I felt the wisdom of centuries here, a place where learning and nature intertwined. I opened a scroll, imagining the stories it contained.",
                 poem: "Scrolls of wisdom, ink so fine,\nLessons whispered through the pine.\nLearning flows with nature's hand,\nKnowledge blooms across the land."
             },
             {
                 name: "Lattice",
                 image: "images/lattice.png",
-                description: "Intricate lattice work filtered sunlight in mesmerizing patterns.",
+                description: "Intricate lattice work filtered sunlight into mesmerizing patterns. Shadows danced across the floor as I wandered, each design inviting careful observation. I felt the artistry of those who built this garden, leaving subtle marks for visitors to discover.",
                 poem: "Light through lattice softly gleams,\nShadows dance like fleeting dreams.\nPatterns woven, artful, free,\nA lattice frames serenity."
             },
             {
                 name: "Bamboo Grove",
                 image: "images/bamboo_grove.png",
-                description: "Tall bamboo swayed gently, a whispering forest guiding me onward.",
+                description: "Tall bamboo swayed gently, a whispering forest guiding me onward. Sunlight dappled the ground as the wind whispered through the leaves, creating a symphony of soft sounds. I walked slowly, feeling the tranquility of this hidden grove.",
                 poem: "Bamboo towers, reaching high,\nLeaves converse with wind and sky.\nA grove of green, serene, profound,\nNature's breath, a gentle sound."
             }
         ];
@@ -227,6 +237,7 @@
         function showLocation(index) {
             currentIndex = index;
             document.getElementById('sleepingVideoSection').style.display = 'none';
+            document.getElementById('wakeUpVideoSection').style.display = 'none';
             const locationSection = document.getElementById('locationSection');
             locationSection.style.display = 'block';
 
@@ -237,14 +248,25 @@
             document.getElementById('locationDescription').innerText = loc.description;
             document.getElementById('locationPoem').innerText = loc.poem;
 
+            // Update button labels dynamically
+            const nextIndex = (currentIndex + 1) % locations.length;
+            const prevIndex = (currentIndex - 1 + locations.length) % locations.length;
+            document.getElementById('nextButton').innerText = `Go to ${locations[nextIndex].name}`;
+            document.getElementById('prevButton').innerText = `Back to ${locations[prevIndex].name}`;
+
+            // Play background music
             const bgMusic = document.getElementById('bgMusic');
             bgMusic.play().catch(() => {
                 console.log("Music autoplay blocked; user interaction required.");
             });
         }
 
-        function wakeUp() {
-            showLocation(0);
+        function goWakeUp() {
+            document.getElementById('locationSection').style.display = 'none';
+            const wakeVideo = document.getElementById('wakeUpVideoSection');
+            wakeVideo.style.display = 'block';
+            const video = wakeVideo.querySelector('video');
+            video.play();
         }
 
         function nextLocation() {
