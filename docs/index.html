@@ -58,8 +58,8 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             background-color: #000;
             display: flex;
             justify-content: center;
@@ -67,6 +67,9 @@
             flex-direction: column;
             cursor: pointer;
             font-size: 2em;
+            z-index: 9999;
+            /* On top of everything */
+            color: #fff;
         }
 
         #startScreen:hover {
@@ -130,8 +133,6 @@
             videoSection.style.display = 'block';
             const sleepingVideo = document.querySelector('#sleepingVideoSection video');
             sleepingVideo.play();
-
-            // Play music after video ends in showGate()
         }
 
         function showGate() {
