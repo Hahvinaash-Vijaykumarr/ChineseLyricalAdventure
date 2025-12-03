@@ -18,7 +18,6 @@
         img {
             max-width: 90%;
             max-height: 70vh;
-            margin-top: 20px;
             border-radius: 10px;
         }
 
@@ -34,22 +33,48 @@
 
         .poem {
             font-style: italic;
-            margin-top: 20px;
             line-height: 1.5em;
         }
 
-        a {
-            display: inline-block;
-            margin: 20px;
+        .flex-row {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .description {
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .poem-container {
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .buttons-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
             padding: 10px 20px;
-            text-decoration: none;
             background-color: #333;
             color: #fff;
+            border: none;
             border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
             transition: background 0.3s;
         }
 
-        a:hover {
+        .action-button:hover {
             background-color: #555;
         }
 
@@ -68,7 +93,6 @@
             cursor: pointer;
             font-size: 2em;
             z-index: 9999;
-            /* On top of everything */
             color: #fff;
         }
 
@@ -102,18 +126,38 @@
     <!-- Main gate section -->
     <div class="container" id="gateSection">
         <h1>Main Gate of the Chinese Garden</h1>
-        <img src="images/main_gate.png" alt="Main Gate">
-        <div class="poem">
-            <p>I slept, and drifted into dreams,</p>
-            <p>Where ponds reflected bamboo streams.</p>
-            <p>Inspired by the <em>Craft of Gardens</em>,</p>
-            <p>Each stone and gate wove gentle themes.</p>
+        <div class="flex-row">
+            <!-- Description on the left -->
+            <div class="description">
+                <p>
+                    I woke to find myself in a serene Chinese garden. The morning mist hugged the curved roofs, lanterns
+                    swayed gently, and the air smelled of jasmine. A feeling of calm and wonder filled me, as if the
+                    book I read
+                    guided me here.
+                </p>
+            </div>
+            <!-- Poem on the right -->
+            <div class="poem-container">
+                <div class="poem">
+                    <p>I slept, and drifted into dreams,</p>
+                    <p>Where ponds reflected bamboo streams.</p>
+                    <p>Inspired by the <em>Craft of Gardens</em>,</p>
+                    <p>Each stone and gate wove gentle themes.</p>
+                </div>
+            </div>
         </div>
-        <p>
-            I woke to find myself in a serene Chinese garden. The morning mist hugged the curved roofs, lanterns
-            swayed gently, and the air smelled of jasmine. A feeling of calm and wonder filled me, as if the book I read
-            guided me here.
-        </p>
+
+        <!-- Gate Image -->
+        <div style="margin-top:20px;">
+            <img src="images/main_gate.png" alt="Main Gate">
+        </div>
+
+        <!-- Action buttons -->
+        <div class="buttons-container">
+            <button class="action-button" onclick="alert('Wake Up clicked!')">Wake Up</button>
+            <button class="action-button" onclick="alert('Go to Pavilion clicked!')">Go to Pavilion</button>
+            <button class="action-button" onclick="alert('Go to Pond clicked!')">Go to Pond</button>
+        </div>
     </div>
 
     <!-- Optional garden video -->
@@ -126,9 +170,7 @@
 
     <script>
         function startExperience() {
-            // Hide start screen
             document.getElementById('startScreen').style.display = 'none';
-            // Show sleeping video
             const videoSection = document.getElementById('sleepingVideoSection');
             videoSection.style.display = 'block';
             const sleepingVideo = document.querySelector('#sleepingVideoSection video');
@@ -136,11 +178,8 @@
         }
 
         function showGate() {
-            // Hide sleeping video
             document.getElementById('sleepingVideoSection').style.display = 'none';
-            // Show main gate
             document.getElementById('gateSection').style.display = 'block';
-            // Play background music
             const bgMusic = document.getElementById('bgMusic');
             bgMusic.play().catch(() => {
                 console.log("Music autoplay blocked; user interaction required.");
