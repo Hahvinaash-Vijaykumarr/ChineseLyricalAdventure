@@ -7,8 +7,7 @@
     <style>
         body {
             background-color: #121212;
-            /* dark theme */
-            color: #ffffff;
+            color: #fff;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
             margin: 0;
@@ -27,9 +26,10 @@
             margin: 20px;
         }
 
-        #gateSection {
+        #gateSection,
+        #gardenVideoSection {
             display: none;
-            /* hidden until video ends */
+            /* hidden initially */
         }
 
         .poem {
@@ -37,19 +37,29 @@
             margin-top: 20px;
             line-height: 1.5em;
         }
+
+        a {
+            display: inline-block;
+            margin: 20px;
+            padding: 10px 20px;
+            text-decoration: none;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        a:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 
 <body>
-    <!-- Background music -->
-    <audio autoplay loop>
-        <source src="images/music.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
 
-    <!-- Start video section -->
-    <div class="container" id="videoSection">
-        <video autoplay onended="showGate()" controls>
+    <!-- Sleeping video -->
+    <div class="container" id="sleepingVideoSection">
+        <video autoplay muted playsinline onended="showGate()" controls>
             <source src="images/sleeping.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
@@ -70,13 +80,29 @@
             gently, and the air smelled of jasmine. A feeling of calm and wonder filled me, as if the book I read guided
             me here.
         </p>
-        <a href="#next">Explore Further</a>
+    </div>
+
+    <!-- Garden video section -->
+    <div class="container" id="gardenVideoSection">
+        <video autoplay muted playsinline controls>
+            <source src="images/garden_walk.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
     </div>
 
     <script>
         function showGate() {
-            document.getElementById('videoSection').style.display = 'none';
+            // Hide sleeping video
+            document.getElementById('sleepingVideoSection').style.display = 'none';
+            // Show main gate
             document.getElementById('gateSection').style.display = 'block';
+
+            // Delay before starting the next video (optional: 2 seconds)
+            setTimeout(() => {
+                document.getElementById('gardenVideoSection').style.display = 'block';
+                const gardenVideo = document.querySelector('#gardenVideoSection video');
+                gardenVideo.play();
+            }, 2000);
         }
     </script>
 
