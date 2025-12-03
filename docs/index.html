@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Dreaming in the Chinese Garden</title>
+
+    <!-- Google Fonts for nicer poetic font -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+
     <style>
         body {
             background-color: #121212;
@@ -16,8 +20,6 @@
 
         video,
         img {
-            max-width: 100%;
-            max-height: 70vh;
             border-radius: 10px;
         }
 
@@ -29,11 +31,6 @@
         #gardenVideoSection,
         #sleepingVideoSection {
             display: none;
-        }
-
-        .poem {
-            font-style: italic;
-            line-height: 1.5em;
         }
 
         /* Flex container for left-center-right layout */
@@ -48,15 +45,29 @@
 
         .description,
         .poem-container {
-            max-width: 200px;
+            max-width: 250px;
             text-align: left;
         }
 
+        .poem {
+            font-style: italic;
+            line-height: 1.6em;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.2em;
+        }
+
         .image-container {
-            max-width: 400px;
+            max-width: 500px;
+            /* Larger image */
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
         }
 
         /* Buttons */
@@ -134,6 +145,7 @@
 
         <!-- Flex layout: description | image | poem -->
         <div class="gate-flex">
+            <!-- Description on left -->
             <div class="description">
                 <p>
                     I woke to find myself in a serene Chinese garden. The morning mist hugged the curved roofs, lanterns
@@ -143,10 +155,12 @@
                 </p>
             </div>
 
+            <!-- Image center -->
             <div class="image-container">
                 <img src="images/main_gate.png" alt="Main Gate">
             </div>
 
+            <!-- Poem on right -->
             <div class="poem-container">
                 <div class="poem">
                     <p>I slept, and drifted into dreams,</p>
