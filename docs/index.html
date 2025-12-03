@@ -157,7 +157,6 @@
     </div>
 
     <script>
-        // Define all 9 locations
         const locations = [
             {
                 name: "Gate",
@@ -238,7 +237,6 @@
             document.getElementById('locationDescription').innerText = loc.description;
             document.getElementById('locationPoem').innerText = loc.poem;
 
-            // Play music
             const bgMusic = document.getElementById('bgMusic');
             bgMusic.play().catch(() => {
                 console.log("Music autoplay blocked; user interaction required.");
@@ -250,12 +248,12 @@
         }
 
         function nextLocation() {
-            let nextIndex = (currentIndex + 1) % locations.length;
+            const nextIndex = (currentIndex + 1) % locations.length;
             showLocation(nextIndex);
         }
 
         function prevLocation() {
-            let prevIndex = (currentIndex - 1 + locations.length) % locations.length;
+            const prevIndex = (currentIndex - 1 + locations.length) % locations.length;
             showLocation(prevIndex);
         }
     </script>
