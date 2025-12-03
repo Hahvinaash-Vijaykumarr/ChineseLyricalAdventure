@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dreaming in the Chinese Garden</title>
+    <style>
+        body {
+            background-color: #121212;
+            /* dark theme */
+            color: #ffffff;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        video,
+        img {
+            max-width: 90%;
+            max-height: 70vh;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+
+        .container {
+            margin: 20px;
+        }
+
+        #gateSection {
+            display: none;
+            /* hidden until video ends */
+        }
+
+        .poem {
+            font-style: italic;
+            margin-top: 20px;
+            line-height: 1.5em;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background music -->
+    <audio autoplay loop>
+        <source src="images/music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Start video section -->
+    <div class="container" id="videoSection">
+        <video autoplay onended="showGate()" controls>
+            <source src="images/sleeping.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Main gate section -->
+    <div class="container" id="gateSection">
+        <h1>Main Gate of the Chinese Garden</h1>
+        <img src="images/main_gate.png" alt="Main Gate">
+        <div class="poem">
+            <p>I slept, and drifted into dreams,</p>
+            <p>Where ponds reflected bamboo streams.</p>
+            <p>Inspired by the <em>Craft of Gardens</em>,</p>
+            <p>Each stone and gate wove gentle themes.</p>
+        </div>
+        <p>
+            I woke to find myself in a serene Chinese garden. The morning mist hugged the curved roofs, lanterns swayed
+            gently, and the air smelled of jasmine. A feeling of calm and wonder filled me, as if the book I read guided
+            me here.
+        </p>
+        <a href="#next">Explore Further</a>
+    </div>
+
+    <script>
+        function showGate() {
+            document.getElementById('videoSection').style.display = 'none';
+            document.getElementById('gateSection').style.display = 'block';
+        }
+    </script>
+
+</body>
+
+</html>
