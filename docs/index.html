@@ -16,7 +16,7 @@
 
         video,
         img {
-            max-width: 90%;
+            max-width: 100%;
             max-height: 70vh;
             border-radius: 10px;
         }
@@ -36,7 +36,8 @@
             line-height: 1.5em;
         }
 
-        .flex-row {
+        /* Flex container for left-center-right layout */
+        .gate-flex {
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -45,16 +46,20 @@
             margin-top: 20px;
         }
 
-        .description {
-            max-width: 400px;
-            text-align: left;
-        }
-
+        .description,
         .poem-container {
-            max-width: 400px;
+            max-width: 200px;
             text-align: left;
         }
 
+        .image-container {
+            max-width: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Buttons */
         .buttons-container {
             margin-top: 20px;
             display: flex;
@@ -126,8 +131,9 @@
     <!-- Main gate section -->
     <div class="container" id="gateSection">
         <h1>Main Gate of the Chinese Garden</h1>
-        <div class="flex-row">
-            <!-- Description on the left -->
+
+        <!-- Flex layout: description | image | poem -->
+        <div class="gate-flex">
             <div class="description">
                 <p>
                     I woke to find myself in a serene Chinese garden. The morning mist hugged the curved roofs, lanterns
@@ -136,7 +142,11 @@
                     guided me here.
                 </p>
             </div>
-            <!-- Poem on the right -->
+
+            <div class="image-container">
+                <img src="images/main_gate.png" alt="Main Gate">
+            </div>
+
             <div class="poem-container">
                 <div class="poem">
                     <p>I slept, and drifted into dreams,</p>
@@ -145,11 +155,6 @@
                     <p>Each stone and gate wove gentle themes.</p>
                 </div>
             </div>
-        </div>
-
-        <!-- Gate Image -->
-        <div style="margin-top:20px;">
-            <img src="images/main_gate.png" alt="Main Gate">
         </div>
 
         <!-- Action buttons -->
@@ -184,13 +189,6 @@
             bgMusic.play().catch(() => {
                 console.log("Music autoplay blocked; user interaction required.");
             });
-
-            // Optional: show garden video after delay
-            setTimeout(() => {
-                document.getElementById('gardenVideoSection').style.display = 'block';
-                const gardenVideo = document.querySelector('#gardenVideoSection video');
-                gardenVideo.play();
-            }, 2000);
         }
     </script>
 
