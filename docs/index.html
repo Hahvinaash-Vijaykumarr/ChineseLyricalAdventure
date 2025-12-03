@@ -34,7 +34,6 @@
             display: none;
         }
 
-        /* Flex layout for description | image | poem */
         .flex-row {
             display: flex;
             justify-content: center;
@@ -93,7 +92,6 @@
             background-color: #555;
         }
 
-        /* Start screen */
         #startScreen {
             position: fixed;
             top: 0;
@@ -140,8 +138,8 @@
 
     <!-- Wake Up video -->
     <div class="container" id="wakeUpVideoSection">
-        <video muted playsinline autoplay controls onended="showLocation(0)">
-            <source src="images/wake_up.mp4" type="video/mp4">
+        <video muted playsinline autoplay controls>
+            <source src="images/wakeup.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
@@ -230,7 +228,7 @@
             document.getElementById('startScreen').style.display = 'none';
             const videoSection = document.getElementById('sleepingVideoSection');
             videoSection.style.display = 'block';
-            const sleepingVideo = document.querySelector('#sleepingVideoSection video');
+            const sleepingVideo = videoSection.querySelector('video');
             sleepingVideo.play();
         }
 
@@ -248,17 +246,30 @@
             document.getElementById('locationDescription').innerText = loc.description;
             document.getElementById('locationPoem').innerText = loc.poem;
 
-            // Update button labels dynamically
-            const nextIndex = (currentIndex + 1) % locations.length;
-            const prevIndex = (currentIndex - 1 + locations.length) % locations.length;
-            document.getElementById('nextButton').innerText = `Go to ${locations[nextIndex].name}`;
-            document.getElementById('prevButton').innerText = `Back to ${locations[prevIndex].name}`;
+            const wakeBtn = document.getElementById('wakeUpButton');
+            const nextBtn = document.getElementById('nextButton');
+            const prevBtn = document.getElementById('prevButton');
 
-            // Play background music
+            // Default: show all buttons
+            wakeBtn.style.display = 'inline-block';
+            nextBtn.style.display = 'inline-block';
+            prevBtn.style.display = 'inline-block';
+
+            // Stop music when going to Wake Up
             const bgMusic = document.getElementById('bgMusic');
-            bgMusic.play().catch(() => {
-                console.log("Music autoplay blocked; user interaction required.");
-            });
+            bgMusic.play().catch(() => { console.log("Music blocked"); });
+
+            // Customize buttons for first and last locations
+            if (currentIndex === 0) { // Gate
+                prevBtn.style.display = 'none';
+                nextBtn.innerText = `Go to ${locations[currentIndex + 1].name}`;
+            } else if (currentIndex === locations.length - 1) { // Bamboo Grove
+                nextBtn.style.display = 'none';
+                prevBtn.style.display = 'none';
+            } else {
+                nextBtn.innerText = `Go to ${locations[currentIndex + 1].name}`;
+                prevBtn.innerText = `Back to ${locations[currentIndex - 1].name}`;
+            }
         }
 
         function goWakeUp() {
@@ -267,6 +278,11 @@
             wakeVideo.style.display = 'block';
             const video = wakeVideo.querySelector('video');
             video.play();
+
+            // Stop background music
+            const bgMusic = document.getElementById('bgMusic');
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
         }
 
         function nextLocation() {
