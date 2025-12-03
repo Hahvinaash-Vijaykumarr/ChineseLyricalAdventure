@@ -27,7 +27,8 @@
         }
 
         #gateSection,
-        #gardenVideoSection {
+        #gardenVideoSection,
+        #sleepingVideoSection {
             display: none;
         }
 
@@ -51,12 +52,37 @@
         a:hover {
             background-color: #555;
         }
+
+        /* Start screen */
+        #startScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            cursor: pointer;
+            font-size: 2em;
+        }
+
+        #startScreen:hover {
+            color: #ffcc00;
+        }
     </style>
 </head>
 
 <body>
 
-    <!-- Background music, initially paused -->
+    <!-- Start Screen -->
+    <div id="startScreen" onclick="startExperience()">
+        Click to Begin
+    </div>
+
+    <!-- Background music -->
     <audio id="bgMusic" loop>
         <source src="images/music.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
@@ -64,7 +90,7 @@
 
     <!-- Sleeping video -->
     <div class="container" id="sleepingVideoSection">
-        <video autoplay muted playsinline onended="showGate()" controls>
+        <video muted playsinline onended="showGate()" controls>
             <source src="images/sleeping.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
@@ -87,28 +113,39 @@
         </p>
     </div>
 
-    <!-- Garden video section (optional) -->
+    <!-- Optional garden video -->
     <div class="container" id="gardenVideoSection">
-        <video autoplay muted playsinline controls>
+        <video muted playsinline controls>
             <source src="images/garden_walk.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
 
     <script>
+        function startExperience() {
+            // Hide start screen
+            document.getElementById('startScreen').style.display = 'none';
+            // Show sleeping video
+            const videoSection = document.getElementById('sleepingVideoSection');
+            videoSection.style.display = 'block';
+            const sleepingVideo = document.querySelector('#sleepingVideoSection video');
+            sleepingVideo.play();
+
+            // Play music after video ends in showGate()
+        }
+
         function showGate() {
             // Hide sleeping video
             document.getElementById('sleepingVideoSection').style.display = 'none';
             // Show main gate
             document.getElementById('gateSection').style.display = 'block';
-
-            // Play background music immediately
+            // Play background music
             const bgMusic = document.getElementById('bgMusic');
             bgMusic.play().catch(() => {
                 console.log("Music autoplay blocked; user interaction required.");
             });
 
-            // Optional: show garden video after 2 seconds
+            // Optional: show garden video after delay
             setTimeout(() => {
                 document.getElementById('gardenVideoSection').style.display = 'block';
                 const gardenVideo = document.querySelector('#gardenVideoSection video');
