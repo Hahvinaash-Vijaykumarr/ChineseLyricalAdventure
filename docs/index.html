@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Dreaming in the Chinese Garden</title>
 
-    <!-- Google Fonts for nicer poetic font -->
+    <!-- Google Fonts for poem -->
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
 
     <style>
@@ -27,14 +27,13 @@
             margin: 20px;
         }
 
-        #gateSection,
-        #gardenVideoSection,
-        #sleepingVideoSection {
+        #sleepingVideoSection,
+        #locationSection {
             display: none;
         }
 
-        /* Flex container for left-center-right layout */
-        .gate-flex {
+        /* Flex layout for description | image | poem */
+        .flex-row {
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -51,14 +50,13 @@
 
         .poem {
             font-style: italic;
-            line-height: 1.6em;
             font-family: 'Dancing Script', cursive;
             font-size: 1.2em;
+            line-height: 1.6em;
         }
 
         .image-container {
             max-width: 500px;
-            /* Larger image */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -70,7 +68,6 @@
             border-radius: 10px;
         }
 
-        /* Buttons */
         .buttons-container {
             margin-top: 20px;
             display: flex;
@@ -133,61 +130,93 @@
 
     <!-- Sleeping video -->
     <div class="container" id="sleepingVideoSection">
-        <video muted playsinline onended="showGate()" controls>
+        <video muted playsinline onended="showLocation(0)" controls>
             <source src="images/sleeping.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
 
-    <!-- Main gate section -->
-    <div class="container" id="gateSection">
-        <h1>Main Gate of the Chinese Garden</h1>
-
-        <!-- Flex layout: description | image | poem -->
-        <div class="gate-flex">
-            <!-- Description on left -->
-            <div class="description">
-                <p>
-                    I woke to find myself in a serene Chinese garden. The morning mist hugged the curved roofs, lanterns
-                    swayed gently, and the air smelled of jasmine. A feeling of calm and wonder filled me, as if the
-                    book I read
-                    guided me here.
-                </p>
-            </div>
-
-            <!-- Image center -->
+    <!-- Location Section -->
+    <div class="container" id="locationSection">
+        <h1 id="locationTitle"></h1>
+        <div class="flex-row">
+            <div class="description" id="locationDescription"></div>
             <div class="image-container">
-                <img src="images/main_gate.png" alt="Main Gate">
+                <img id="locationImage" src="" alt="">
             </div>
-
-            <!-- Poem on right -->
             <div class="poem-container">
-                <div class="poem">
-                    <p>I slept, and drifted into dreams,</p>
-                    <p>Where ponds reflected bamboo streams.</p>
-                    <p>Inspired by the <em>Craft of Gardens</em>,</p>
-                    <p>Each stone and gate wove gentle themes.</p>
-                </div>
+                <div class="poem" id="locationPoem"></div>
             </div>
         </div>
 
-        <!-- Action buttons -->
         <div class="buttons-container">
-            <button class="action-button" onclick="alert('Wake Up clicked!')">Wake Up</button>
-            <button class="action-button" onclick="alert('Go to Pavilion clicked!')">Go to Pavilion</button>
-            <button class="action-button" onclick="alert('Go to Pond clicked!')">Go to Pond</button>
+            <button class="action-button" onclick="wakeUp()">Wake Up</button>
+            <button class="action-button" onclick="prevLocation()">Previous</button>
+            <button class="action-button" onclick="nextLocation()">Next</button>
         </div>
-    </div>
-
-    <!-- Optional garden video -->
-    <div class="container" id="gardenVideoSection">
-        <video muted playsinline controls>
-            <source src="images/garden_walk.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
     </div>
 
     <script>
+        // Define all 9 locations
+        const locations = [
+            {
+                name: "Gate",
+                image: "images/main_gate.png",
+                description: "I woke to find myself in a serene Chinese garden. The morning mist hugged the curved roofs, lanterns swayed gently, and the air smelled of jasmine. A feeling of calm and wonder filled me, as if the book I read guided me here.",
+                poem: "I slept, and drifted into dreams,\nWhere ponds reflected bamboo streams.\nInspired by the Craft of Gardens,\nEach stone and gate wove gentle themes."
+            },
+            {
+                name: "Courtyard",
+                image: "images/courtyard.png",
+                description: "The courtyard was open and peaceful, surrounded by elegant arches and potted bonsai. Light filtered softly through the paper lanterns.",
+                poem: "Stepping lightly on the stones,\nEchoes of silence and calm tones.\nA courtyard embraced my wandering mind,\nIn its stillness, peace I find."
+            },
+            {
+                name: "Walkway",
+                image: "images/walkway.png",
+                description: "A narrow walkway lined with bamboo guided me deeper into the garden, each step resonating softly underfoot.",
+                poem: "Bamboo sways and whispers low,\nAlong the path where footsteps go.\nA journey subtle, winding, clear,\nNature's voice I softly hear."
+            },
+            {
+                name: "Pond",
+                image: "images/pond.png",
+                description: "A reflective pond mirrored the sky, koi swam lazily, and lotus flowers floated serenely.",
+                poem: "Water glistens, calm and deep,\nLotus blooms in silence sleep.\nKoi dance gently, weaving grace,\nReflections glow upon their space."
+            },
+            {
+                name: "Pavilion",
+                image: "images/pavilion.png",
+                description: "A quiet pavilion provided a space to pause, with wooden beams carved in delicate patterns.",
+                poem: "Beneath the pavilion's roof,\nI found a moment, clear and proof.\nWood and stone in harmony,\nA tranquil pause, a gentle plea."
+            },
+            {
+                name: "Grotto",
+                image: "images/grotto.png",
+                description: "A hidden grotto with moss-covered stones offered a mysterious charm.",
+                poem: "In the grotto's quiet shade,\nSecrets of the garden laid.\nMoss and shadow, cool and deep,\nWhisper stories mine to keep."
+            },
+            {
+                name: "Scholar",
+                image: "images/scholar.png",
+                description: "A scholar's study by the bamboo grove, filled with scrolls and ink brushes.",
+                poem: "Scrolls of wisdom, ink so fine,\nLessons whispered through the pine.\nLearning flows with nature's hand,\nKnowledge blooms across the land."
+            },
+            {
+                name: "Lattice",
+                image: "images/lattice.png",
+                description: "Intricate lattice work filtered sunlight in mesmerizing patterns.",
+                poem: "Light through lattice softly gleams,\nShadows dance like fleeting dreams.\nPatterns woven, artful, free,\nA lattice frames serenity."
+            },
+            {
+                name: "Bamboo Grove",
+                image: "images/bamboo_grove.png",
+                description: "Tall bamboo swayed gently, a whispering forest guiding me onward.",
+                poem: "Bamboo towers, reaching high,\nLeaves converse with wind and sky.\nA grove of green, serene, profound,\nNature's breath, a gentle sound."
+            }
+        ];
+
+        let currentIndex = 0;
+
         function startExperience() {
             document.getElementById('startScreen').style.display = 'none';
             const videoSection = document.getElementById('sleepingVideoSection');
@@ -196,13 +225,38 @@
             sleepingVideo.play();
         }
 
-        function showGate() {
+        function showLocation(index) {
+            currentIndex = index;
             document.getElementById('sleepingVideoSection').style.display = 'none';
-            document.getElementById('gateSection').style.display = 'block';
+            const locationSection = document.getElementById('locationSection');
+            locationSection.style.display = 'block';
+
+            const loc = locations[currentIndex];
+            document.getElementById('locationTitle').innerText = loc.name;
+            document.getElementById('locationImage').src = loc.image;
+            document.getElementById('locationImage').alt = loc.name;
+            document.getElementById('locationDescription').innerText = loc.description;
+            document.getElementById('locationPoem').innerText = loc.poem;
+
+            // Play music
             const bgMusic = document.getElementById('bgMusic');
             bgMusic.play().catch(() => {
                 console.log("Music autoplay blocked; user interaction required.");
             });
+        }
+
+        function wakeUp() {
+            showLocation(0);
+        }
+
+        function nextLocation() {
+            let nextIndex = (currentIndex + 1) % locations.length;
+            showLocation(nextIndex);
+        }
+
+        function prevLocation() {
+            let prevIndex = (currentIndex - 1 + locations.length) % locations.length;
+            showLocation(prevIndex);
         }
     </script>
 
