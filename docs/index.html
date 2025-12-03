@@ -29,7 +29,6 @@
         #gateSection,
         #gardenVideoSection {
             display: none;
-            /* hidden initially */
         }
 
         .poem {
@@ -57,6 +56,12 @@
 
 <body>
 
+    <!-- Background music, initially paused -->
+    <audio id="bgMusic" loop>
+        <source src="images/music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <!-- Sleeping video -->
     <div class="container" id="sleepingVideoSection">
         <video autoplay muted playsinline onended="showGate()" controls>
@@ -76,13 +81,13 @@
             <p>Each stone and gate wove gentle themes.</p>
         </div>
         <p>
-            I woke to find myself in a serene Chinese garden. The morning mist hugged the curved roofs, lanterns swayed
-            gently, and the air smelled of jasmine. A feeling of calm and wonder filled me, as if the book I read guided
-            me here.
+            I woke to find myself in a serene Chinese garden. The morning mist hugged the curved roofs, lanterns
+            swayed gently, and the air smelled of jasmine. A feeling of calm and wonder filled me, as if the book I read
+            guided me here.
         </p>
     </div>
 
-    <!-- Garden video section -->
+    <!-- Garden video section (optional) -->
     <div class="container" id="gardenVideoSection">
         <video autoplay muted playsinline controls>
             <source src="images/garden_walk.mp4" type="video/mp4">
@@ -97,7 +102,13 @@
             // Show main gate
             document.getElementById('gateSection').style.display = 'block';
 
-            // Delay before starting the next video (optional: 2 seconds)
+            // Play background music immediately
+            const bgMusic = document.getElementById('bgMusic');
+            bgMusic.play().catch(() => {
+                console.log("Music autoplay blocked; user interaction required.");
+            });
+
+            // Optional: show garden video after 2 seconds
             setTimeout(() => {
                 document.getElementById('gardenVideoSection').style.display = 'block';
                 const gardenVideo = document.querySelector('#gardenVideoSection video');
