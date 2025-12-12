@@ -3,299 +3,214 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Dreaming in the Chinese Garden</title>
-
-    <!-- Google Fonts for poem -->
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chinese Garden Map</title>
     <style>
         body {
-            background-color: #121212;
-            color: #fff;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
             margin: 0;
-            padding: 0;
+            background: #f0f0f0;
+            font-family: sans-serif;
         }
 
-        video,
-        img {
-            border-radius: 10px;
-        }
-
-        .container {
-            margin: 20px;
-        }
-
-        #startScreen,
-        #sleepingVideoSection,
-        #locationSection,
-        #wakeUpVideoSection {
-            display: none;
-        }
-
-        .flex-row {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-
-        .description,
-        .poem-container {
-            max-width: 250px;
-            text-align: left;
-        }
-
-        .poem {
-            font-style: italic;
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.2em;
-            line-height: 1.6em;
-        }
-
-        .image-container {
-            max-width: 500px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .image-container img {
+        .garden-map {
+            position: relative;
             width: 100%;
-            height: auto;
-            border-radius: 10px;
+            max-width: 1000px;
+            aspect-ratio: 1000 / 700;
+            margin: auto;
+            background-image: url('images/my_garden.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
-        .buttons-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .action-button {
-            padding: 10px 20px;
-            background-color: #333;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
+        .node {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 0, 0.7);
             cursor: pointer;
-            font-size: 1em;
-            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
         }
 
-        .action-button:hover {
-            background-color: #555;
+        /* Tooltip container */
+        .node .tooltip {
+            visibility: hidden;
+            width: max-content;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            padding: 5px 8px;
+            border-radius: 5px;
+            position: absolute;
+            z-index: 100;
+            bottom: 150%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
         }
 
-        #startScreen {
+        .node .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+        }
+
+        .node:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Positions for the 9 features */
+        .moon-gate {
+            top: 73%;
+            left: 31.5%;
+        }
+
+        .walkway {
+            top: 50%;
+            left: 60%;
+        }
+
+        .pond {
+            top: 60%;
+            left: 48%;
+        }
+
+        .pavilion {
+            top: 50%;
+            left: 43%;
+        }
+
+        .pagoda {
+            top: 30%;
+            left: 66.4%;
+        }
+
+        .grotto {
+            top: 52.5%;
+            left: 26.5%;
+        }
+
+        .lattice {
+            top: 27.5%;
+            left: 30%;
+        }
+
+        .courtyard {
+            top: 74%;
+            left: 61.5%;
+        }
+
+        .bamboo {
+            top: 60%;
+            left: 72.5%;
+        }
+
+        /* Toggle button styles */
+        .toggle-container {
             position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-label {
+            font-size: 14px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            display: inline-block;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            cursor: pointer;
-            font-size: 2em;
-            z-index: 9999;
-            color: #fff;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 24px;
         }
 
-        #startScreen:hover {
-            color: #ffcc00;
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #2196F3;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
         }
     </style>
 </head>
 
 <body>
-
-    <!-- Start Screen -->
-    <div id="startScreen" onclick="startExperience()">
-        Click to Begin
+    <!-- Toggle Switch -->
+    <div class="toggle-container">
+        <span class="toggle-label">Show Nodes</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="toggleNodes" checked>
+            <span class="slider"></span>
+        </label>
     </div>
 
-    <!-- Background music -->
-    <audio id="bgMusic" loop>
-        <source src="images/music.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-
-    <!-- Sleeping video -->
-    <div class="container" id="sleepingVideoSection">
-        <video muted playsinline onended="showLocation(0)" controls>
-            <source src="images/sleeping.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </div>
-
-    <!-- Wake Up video -->
-    <div class="container" id="wakeUpVideoSection">
-        <video muted playsinline autoplay controls>
-            <source src="images/wakeup.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </div>
-
-    <!-- Location Section -->
-    <div class="container" id="locationSection">
-        <h1 id="locationTitle"></h1>
-        <div class="flex-row">
-            <div class="description" id="locationDescription"></div>
-            <div class="image-container">
-                <img id="locationImage" src="" alt="">
-            </div>
-            <div class="poem-container">
-                <div class="poem" id="locationPoem"></div>
-            </div>
-        </div>
-
-        <div class="buttons-container">
-            <button class="action-button" id="wakeUpButton" onclick="goWakeUp()">Wake Up</button>
-            <button class="action-button" id="prevButton" onclick="prevLocation()">Previous</button>
-            <button class="action-button" id="nextButton" onclick="nextLocation()">Next</button>
-        </div>
+    <div class="garden-map">
+        <a href="main_gate.html" class="node moon-gate"><span class="tooltip">Moon Gate</span></a>
+        <a href="walkway.html" class="node walkway"><span class="tooltip">Walkway</span></a>
+        <a href="pond.html" class="node pond"><span class="tooltip">Pond</span></a>
+        <a href="pavilion.html" class="node pavilion"><span class="tooltip">Pavilion</span></a>
+        <a href="scholar.html" class="node pagoda"><span class="tooltip">Pagoda</span></a>
+        <a href="grotto.html" class="node grotto"><span class="tooltip">Grotto</span></a>
+        <a href="lattice.html" class="node lattice"><span class="tooltip">Lattice Windows</span></a>
+        <a href="courtyard.html" class="node courtyard"><span class="tooltip">Courtyard</span></a>
+        <a href="bamboo.html" class="node bamboo"><span class="tooltip">Bamboo Grove</span></a>
     </div>
 
     <script>
-        const locations = [
-            {
-                name: "Main Gate",
-                image: "images/main_gate.png",
-                description: "I woke to find myself in a serene Chinese garden. The morning mist hugged the curved roofs, lanterns swayed gently, and the air smelled of jasmine. A feeling of calm and wonder filled me, as if the book I read guided me here. I stepped closer to the gate, listening to the faint rustle of bamboo leaves and the distant sound of water trickling.",
-                poem: "I slept, and drifted into dreams,\nWhere ponds reflected bamboo streams.\nInspired by the Craft of Gardens,\nEach stone and gate wove gentle themes."
-            },
-            {
-                name: "Courtyard",
-                image: "images/courtyard.png",
-                description: "The courtyard was open and peaceful, surrounded by elegant arches and potted bonsai. Light filtered softly through the paper lanterns, painting intricate patterns on the ground. I walked slowly, savoring the gentle fragrance of flowers and the warm sunlight that touched my face.",
-                poem: "Stepping lightly on the stones,\nEchoes of silence and calm tones.\nA courtyard embraced my wandering mind,\nIn its stillness, peace I find."
-            },
-            {
-                name: "Walkway",
-                image: "images/walkway.png",
-                description: "A narrow walkway lined with bamboo guided me deeper into the garden. Each step resonated softly underfoot, as birds sang hidden melodies above. The path twisted and turned, revealing small glimpses of tranquil ponds and flower beds, inviting me to continue the journey.",
-                poem: "Bamboo sways and whispers low,\nAlong the path where footsteps go.\nA journey subtle, winding, clear,\nNature's voice I softly hear."
-            },
-            {
-                name: "Pond",
-                image: "images/pond.png",
-                description: "A reflective pond mirrored the sky, koi swam lazily, and lotus flowers floated serenely. The water shimmered with sunlight, and I paused to admire the gentle ripples. Dragonflies hovered above, and the subtle scent of lotus filled the air.",
-                poem: "Water glistens, calm and deep,\nLotus blooms in silence sleep.\nKoi dance gently, weaving grace,\nReflections glow upon their space."
-            },
-            {
-                name: "Pavilion",
-                image: "images/pavilion.png",
-                description: "A quiet pavilion provided a space to pause. Its wooden beams were carved in delicate patterns, and the roof offered shelter from the gentle breeze. I sat on the polished floor, taking in the serenity and feeling completely embraced by the garden.",
-                poem: "Beneath the pavilion's roof,\nI found a moment, clear and proof.\nWood and stone in harmony,\nA tranquil pause, a gentle plea."
-            },
-            {
-                name: "Grotto",
-                image: "images/grotto.png",
-                description: "A hidden grotto with moss-covered stones offered a mysterious charm. Stalactites dripped softly into a small pool, and shadows danced along the walls. I leaned in, feeling the cool air and listening to the gentle echoes, lost in contemplation.",
-                poem: "In the grotto's quiet shade,\nSecrets of the garden laid.\nMoss and shadow, cool and deep,\nWhisper stories mine to keep."
-            },
-            {
-                name: "Scholar Room",
-                image: "images/scholar.png",
-                description: "A scholar's study by the bamboo grove was filled with scrolls, ink brushes, and delicate carvings. I felt the wisdom of centuries here, a place where learning and nature intertwined. I opened a scroll, imagining the stories it contained.",
-                poem: "Scrolls of wisdom, ink so fine,\nLessons whispered through the pine.\nLearning flows with nature's hand,\nKnowledge blooms across the land."
-            },
-            {
-                name: "Lattice Window",
-                image: "images/lattice.png",
-                description: "Intricate lattice work filtered sunlight into mesmerizing patterns. Shadows danced across the floor as I wandered, each design inviting careful observation. I felt the artistry of those who built this garden, leaving subtle marks for visitors to discover.",
-                poem: "Light through lattice softly gleams,\nShadows dance like fleeting dreams.\nPatterns woven, artful, free,\nA lattice frames serenity."
-            },
-            {
-                name: "Bamboo Grove",
-                image: "images/bamboo_grove.png",
-                description: "Tall bamboo swayed gently, a whispering forest guiding me onward. Sunlight dappled the ground as the wind whispered through the leaves, creating a symphony of soft sounds. I walked slowly, feeling the tranquility of this hidden grove.",
-                poem: "Bamboo towers, reaching high,\nLeaves converse with wind and sky.\nA grove of green, serene, profound,\nNature's breath, a gentle sound."
-            }
-        ];
-
-        let currentIndex = 0;
-
-        function startExperience() {
-            document.getElementById('startScreen').style.display = 'none';
-            const videoSection = document.getElementById('sleepingVideoSection');
-            videoSection.style.display = 'block';
-            const sleepingVideo = videoSection.querySelector('video');
-            sleepingVideo.play();
-        }
-
-        function showLocation(index) {
-            currentIndex = index;
-            document.getElementById('sleepingVideoSection').style.display = 'none';
-            document.getElementById('wakeUpVideoSection').style.display = 'none';
-            const locationSection = document.getElementById('locationSection');
-            locationSection.style.display = 'block';
-
-            const loc = locations[currentIndex];
-            document.getElementById('locationTitle').innerText = loc.name;
-            document.getElementById('locationImage').src = loc.image;
-            document.getElementById('locationImage').alt = loc.name;
-            document.getElementById('locationDescription').innerText = loc.description;
-            document.getElementById('locationPoem').innerText = loc.poem;
-
-            const wakeBtn = document.getElementById('wakeUpButton');
-            const nextBtn = document.getElementById('nextButton');
-            const prevBtn = document.getElementById('prevButton');
-
-            // Default: show all buttons
-            wakeBtn.style.display = 'inline-block';
-            nextBtn.style.display = 'inline-block';
-            prevBtn.style.display = 'inline-block';
-
-            // Stop music when going to Wake Up
-            const bgMusic = document.getElementById('bgMusic');
-            bgMusic.play().catch(() => { console.log("Music blocked"); });
-
-            // Customize buttons for first and last locations
-            if (currentIndex === 0) { // Gate
-                prevBtn.style.display = 'none';
-                nextBtn.innerText = `Go to ${locations[currentIndex + 1].name}`;
-            } else if (currentIndex === locations.length - 1) { // Bamboo Grove
-                nextBtn.style.display = 'none';
-                prevBtn.style.display = 'none';
-            } else {
-                nextBtn.innerText = `Go to ${locations[currentIndex + 1].name}`;
-                prevBtn.innerText = `Back to ${locations[currentIndex - 1].name}`;
-            }
-        }
-
-        function goWakeUp() {
-            document.getElementById('locationSection').style.display = 'none';
-            const wakeVideo = document.getElementById('wakeUpVideoSection');
-            wakeVideo.style.display = 'block';
-            const video = wakeVideo.querySelector('video');
-            video.play();
-
-            // Stop background music
-            const bgMusic = document.getElementById('bgMusic');
-            bgMusic.pause();
-            bgMusic.currentTime = 0;
-        }
-
-        function nextLocation() {
-            const nextIndex = (currentIndex + 1) % locations.length;
-            showLocation(nextIndex);
-        }
-
-        function prevLocation() {
-            const prevIndex = (currentIndex - 1 + locations.length) % locations.length;
-            showLocation(prevIndex);
-        }
+        const toggle = document.getElementById('toggleNodes');
+        const nodes = document.querySelectorAll('.node');
+        toggle.addEventListener('change', () => {
+            nodes.forEach(node => {
+                node.style.display = toggle.checked ? 'flex' : 'none';
+            });
+        });
     </script>
-
 </body>
 
 </html>
