@@ -4,19 +4,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chinese Garden Map</title>
+    <title>Chinese Garden</title>
+    <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
-            background: #f0f0f0;
-            font-family: sans-serif;
+            font-family: 'Montserrat';
+            background: #000;
+            color: #fff;
+        }
+
+        .poem {
+            font-family: 'Satisfy', cursive;
+            /* easier to read cursive */
+            font-size: 24px;
+            color: #eee;
+            margin-top: 0px;
+            line-height: 1.8;
+
+
+            /* Positioned to the right of the section and vertically centered */
+            position: absolute;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 220px;
+            text-align: left;
+
+        }
+
+        .section {
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 40px;
+            min-height: 100vh;
+
+            /* allow absolutely-positioned poem to be placed relative to section */
+            position: relative;
+        }
+
+        .container {
+            display: flex;
+            gap: 40px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .column {
+            flex: 1;
+            background: #111;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        p {
+            text-align: center;
+            font-size: 20px;
+            color: #ccc;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .back-button a {
+            text-decoration: none;
+            background-color: #2196F3;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 6px;
         }
 
         .garden-map {
             position: relative;
-            width: 100%;
-            max-width: 1000px;
-            aspect-ratio: 1000 / 700;
+            width: 70%;
+            max-width: 2000px;
+            aspect-ratio: 1000/700;
             margin: auto;
             background-image: url('images/my_garden.png');
             background-size: contain;
@@ -37,7 +120,6 @@
             text-decoration: none;
         }
 
-        /* Tooltip container */
         .node .tooltip {
             visibility: hidden;
             width: max-content;
@@ -72,7 +154,7 @@
             opacity: 1;
         }
 
-        /* Positions for the 9 features */
+        /* Positions for the nodes */
         .moon-gate {
             top: 73%;
             left: 31.5%;
@@ -181,33 +263,401 @@
 </head>
 
 <body>
-    <!-- Toggle Switch -->
-    <div class="toggle-container">
-        <span class="toggle-label">Show Nodes</span>
-        <label class="toggle-switch">
-            <input type="checkbox" id="toggleNodes" checked>
-            <span class="slider"></span>
-        </label>
+    <div id="splash" style="
+        position: fixed;
+        top:0; left:0; width:100%; height:100%;
+        background-color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 36px;
+        cursor: pointer;
+        z-index: 2000;
+    ">
+        Click to Begin
     </div>
 
-    <div class="garden-map">
-        <a href="main_gate.html" class="node moon-gate"><span class="tooltip">Moon Gate</span></a>
-        <a href="walkway.html" class="node walkway"><span class="tooltip">Walkway</span></a>
-        <a href="pond.html" class="node pond"><span class="tooltip">Pond</span></a>
-        <a href="pavilion.html" class="node pavilion"><span class="tooltip">Pavilion</span></a>
-        <a href="scholar.html" class="node pagoda"><span class="tooltip">Pagoda</span></a>
-        <a href="grotto.html" class="node grotto"><span class="tooltip">Grotto</span></a>
-        <a href="lattice.html" class="node lattice"><span class="tooltip">Lattice Windows</span></a>
-        <a href="courtyard.html" class="node courtyard"><span class="tooltip">Courtyard</span></a>
-        <a href="bamboo.html" class="node bamboo"><span class="tooltip">Bamboo Grove</span></a>
+    <!-- Background music -->
+    <audio id="bgMusic" src="images/music.mp3" loop></audio>
+
+    <!-- Toggle Switches -->
+    <div class="toggle-container">
+        <div id="nodeToggleWrapper">
+            <span class="toggle-label">Show Nodes</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggleNodes">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div id="musicToggleWrapper">
+            <span class="toggle-label">Music</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggleMusic" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Map -->
+    <div id="map" class="garden-map">
+        <a class="node moon-gate" data-target="main_gate"><span class="tooltip">Moon Gate</span></a>
+        <a class="node walkway" data-target="walkway"><span class="tooltip">Walkway</span></a>
+        <a class="node pond" data-target="pond"><span class="tooltip">Pond</span></a>
+        <a class="node pavilion" data-target="pavilion"><span class="tooltip">Pavilion</span></a>
+        <a class="node pagoda" data-target="pagoda"><span class="tooltip">Pagoda</span></a>
+        <a class="node grotto" data-target="grotto"><span class="tooltip">Grotto</span></a>
+        <a class="node lattice" data-target="lattice"><span class="tooltip">Lattice Windows</span></a>
+        <a class="node courtyard" data-target="courtyard"><span class="tooltip">Courtyard</span></a>
+        <a class="node bamboo" data-target="bamboo"><span class="tooltip">Bamboo Grove</span></a>
+    </div>
+
+    <!-- Sections -->
+    <!-- Bamboo -->
+    <div id="bamboo" class="section">
+        <div class='container'>
+            <div class='column'>
+                <h2>Chinese Garden Inspiration</h2>
+                <img src='images/bamboo_grove_real.png' alt='Inspiration'>
+                <p>The bamboo grove in Singapore’s Chinese Garden create a cooling sensory corridor, where tall bamboo
+                    stems.. Bamboo itself symbolises uprightness and resilience in Chinese culture and adds a peaceful,
+                    rhythmic texture to the landscape.</p>
+            </div>
+            <div class='column'>
+                <h2>My Dream Garden</h2>
+                <img src='images/bamboo_grove.png' alt='Dream Garden'>
+                <p>Inspired by the original bamboo grove, my dream version has a long winding path instead of a straight
+                    one and an open top instead of bamboo covering it, allowing sunlight and sky views while preserving
+                    the sense of tranquil passage.</p>
+            </div>
+            <div class="poem">
+                Tall green towers sway above,<br>
+                Leaves dancing in a quiet love.<br>
+                I walk a path, straight and true—<br>
+                Yet dream of winding paths anew.
+            </div>
+        </div>
+        <div class='back-button'>
+            <a href="#" class="back">Back to Map</a>
+        </div>
+    </div>
+
+    <!-- Courtyard -->
+    <div id="courtyard" class="section">
+        <div class='container'>
+            <div class='column'>
+                <h2>Chinese Garden Inspiration</h2>
+                <img src='images/courtyard_real.png' alt='Inspiration'>
+                <p>In the Bonsai Garden and its surrounding courtyards, decorative screens and lattice windows frame
+                    views of bonsai displays and planted spaces, creating “living paintings” that shift with light and
+                    perspective. These lattice forms are integral to classical Chinese aesthetics, enhancing the rhythm
+                    between interior courtyards and outdoor gardens.</p>
+            </div>
+            <div class='column'>
+                <h2>My Dream Garden</h2>
+                <img src='images/courtyard.png' alt='Dream Garden'>
+                <p>Inspired by these serene pockets, your dream courtyard adds a pond and a small bridge, introducing a
+                    water element that complements the surrounding greenery and provides a peaceful reflective space.
+                </p>
+            </div>
+            <div class="poem">
+                Stone and tile beneath my feet,<br>
+                Quiet corners, shadows meet.<br>
+                Bonsai trees and calmness near,<br>
+                Harmony fills the open air.
+            </div>
+        </div>
+        <div class='back-button'>
+            <a href="#" class="back">Back to Map</a>
+        </div>
+    </div>
+
+    <!-- Grotto -->
+    <div id="grotto" class="section">
+        <div class='container'>
+            <div class='column'>
+                <h2>Chinese Garden Inspiration</h2>
+                <img src='images/grotto_real.png' alt='Inspiration'>
+                <p>Singapore’s Bonsai Garden has a grotto similar to those in Suzhou. Its rockwork and hidden niches
+                    beneath pavilions evoke similar experiences. The Bonsai Garden integrates subtle caves and stone
+                    features that encourage exploration and connect closely to Chinese literati garden ideals, where
+                    rocks signify mountain essence</p>
+            </div>
+            <div class='column'>
+                <h2>My Dream Garden</h2>
+                <img src='images/grotto.png' alt='Dream Garden'>
+                <p>Inspired by the Bonsai Garden grotto, my dream grotto is larger and more spacious, with sculpted
+                    stone alcoves and water features that allow me and visitors to explore freely while maintaining a
+                    sense of mystery and contemplation.</p>
+            </div>
+            <div class="poem">
+                Dark stones echo trickling streams,<br>
+                A secret place of hidden dreams.<br>
+                Shadows dance in narrow halls,<br>
+                Nature whispers through the walls.
+            </div>
+            <div class='back-button'>
+                <a href="#" class="back">Back to Map</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lattice -->
+    <div id="lattice" class="section">
+        <div class='container'>
+            <div class='column'>
+                <h2>Chinese Garden Inspiration</h2>
+                <img src='images/lattice_real.png' alt='Inspiration'>
+                <p>In the Bonsai Garden and its surrounding courtyards, decorative screens and lattice windows frame
+                    views of bonsai displays and planted spaces, creating “living paintings” that shift with light
+                    and
+                    perspective. These lattice forms are integral to classical Chinese aesthetics, enhancing the
+                    rhythm
+                    between interior courtyards and outdoor gardens.</p>
+            </div>
+            <div class='column'>
+                <h2>My Dream Garden</h2>
+                <img src='images/lattice.png' alt='Dream Garden'>
+                <p>My dream lattice windows are more open, allowing me and visitors to see through the patterns
+                    fully.
+                    The laser-cut designs frame seasonal views while creating a transparent yet decorative visual
+                    rhythm.</p>
+            </div>
+            <div class="poem">
+                Carved wood frames the world outside,<br>
+                Patterns shift, the light will guide.<br>
+                Bonsai garden views peek through,<br>
+                Shadows play in every hue.
+            </div>
+        </div>
+        <div class='back-button'>
+            <a href="#" class="back">Back to Map</a>
+        </div>
+    </div>
+
+    <!-- Main Gate -->
+    <div id="main_gate" class="section">
+        <div class='container'>
+            <div class='column'>
+                <h2>Chinese Garden Inspiration</h2>
+                <img src='images/main_gate_real.png' alt='Inspiration'>
+                <p>The Moon Gate at the Bonsai Garden in Singapore is a classic circular architectural feature
+                    inviting
+                    visitors into a Suzhou-style bonsai landscape. It echoes traditional Chinese garden symbolism of
+                    harmony and completeness, framing the view before you pass through and setting the tone for
+                    contemplative exploration of the bonsai exhibitions and courtyards.</p>
+            </div>
+            <div class='column'>
+                <h2>My Dream Garden</h2>
+                <img src='images/main_gate.png' alt='Dream Garden'>
+                <p>Inspired by this elegant gateway, your dream Moon Gate is enhanced with flowering plants and soft
+                    lighting that gently usher me and visitors into my garden’s heart. It’s a threshold to peace and
+                    reflection, echoing that timeless sense of arrival and transition.</p>
+            </div>
+            <div class="poem">
+                Through circular doorway wide,<br>
+                I glimpse a world where calm resides.<br>
+                Curved stone and bonsai trees,<br>
+                Whisper stories in the breeze.
+            </div>
+        </div>
+        <div class='back-button'>
+            <a href="#" class="back">Back to Map</a>
+        </div>
+    </div>
+
+    <!-- Pavilion -->
+    <div id="pavilion" class="section">
+        <div class='container'>
+            <div class='column'>
+                <h2>Chinese Garden Inspiration</h2>
+                <img src='images/pavilion_real.png' alt='Inspiration'>
+                <p>Pavilions in Singapore’s Chinese Garden, such as the tea pavilion near the main pond, offer
+                    shaded
+                    rests and scenic frames for observing the landscape. Their open design and traditional rooflines
+                    invite conversation and contemplation while overlooking rippling water and surrounding greenery
+                </p>
+            </div>
+            <div class='column'>
+                <h2>My Dream Garden</h2>
+                <img src='images/pavilion.png' alt='Dream Garden'>
+                <p>My dream pavilion draws on this tradition but makes it much more open and spacious. Panoramic
+                    views,
+                    extended seating, and unobstructed layouts invite me and multiple visitors to enjoy the space
+                    together while blending classic design with comfort.</p>
+            </div>
+            <div class="poem">
+                Shaded corners, laughter near,<br>
+                Reflections shimmer in waters clear.<br>
+                Pavilion rests beside the pond,<br>
+                Calm and beauty here correspond.
+            </div>
+        </div>
+        <div class='back-button'>
+            <a href="#" class="back">Back to Map</a>
+        </div>
+    </div>
+
+    <!-- Pond -->
+    <div id="pond" class="section">
+        <div class='container'>
+            <div class='column'>
+                <h2>Chinese Garden Inspiration</h2>
+                <img src='images/pond_real.png' alt='Inspiration'>
+                <p>The ponds in Singapore’s Chinese Garden serve as reflective centres, influenced by classical
+                    Chinese
+                    water aesthetics. Often edged with lotus and water lilies, these serene pools mirror pavilions
+                    and
+                    bridges, creating a balance between architecture and nature that typifies Chinese garden
+                    philosophy.
+                </p>
+            </div>
+            <div class='column'>
+                <h2>My Dream Garden</h2>
+                <img src='images/pond.png' alt='Dream Garden'>
+                <p>Inspired by those tranquil waters, my dream pond becomes a focal sanctuary with fewer lotuses and
+                    more fishes swimming inside, enhancing both visual interest and the sense of life in the water.
+                </p>
+            </div>
+            <div class="poem">
+                Water mirrors sky above,<br>
+                Lotuses float, a scene I love.<br>
+                Gentle ripples, breeze so mild,<br>
+                A calm oasis, soft and wild.
+            </div>
+        </div>
+        <div class='back-button'>
+            <a href="#" class="back">Back to Map</a>
+        </div>
+    </div>
+
+    <!-- Pagoda -->
+    <div id="pagoda" class="section">
+        <div class='container'>
+            <div class='column'>
+                <h2>Chinese Garden Inspiration</h2>
+                <img src='images/pagoda_real.png' alt='Inspiration'>
+                <p>The iconic Cloud Pagoda in Singapore’s Chinese Garden, a seven-storey tower inspired by ancient
+                    temples like Nanjing’s Linggu Temple, dominates the skyline. Its layered roofs and surrounding
+                    zodiac sculptures make it both a cultural landmark and a viewpoint offering panoramic vistas of
+                    the
+                    gardens and lake below</p>
+            </div>
+            <div class='column'>
+                <h2>My Dream Garden</h2>
+                <img src='images/pagoda.png' alt='Dream Garden'>
+                <p>In my dream garden, the pagoda is redesigned to be smaller and painted red, providing an intimate
+                    landmark while keeping the layered roof and surrounding gardens that honor the original Cloud
+                    Pagoda’s spirit.</p>
+            </div>
+            <div class="poem">
+                Rising tier, red roofs in the sun,<br>
+                Steps echo where quiet souls run.<br>
+                Cloud Pagoda stands so tall,<br>
+                Shadows play along the wall.
+            </div>
+        </div>
+        <div class='back-button'>
+            <a href="#" class="back">Back to Map</a>
+        </div>
+    </div>
+
+    <!-- Walkway -->
+    <div id="walkway" class="section">
+        <div class='container'>
+            <div class='column'>
+                <h2>Chinese Garden Inspiration</h2>
+                <img src='images/walkway_real.png' alt='Inspiration'>
+                <p>The winding walkways of Singapore’s Chinese Garden weave around ponds, pavilions and scenic
+                    vignettes, inviting visitors to explore at a slow, thoughtful pace. Designed with traditional
+                    layout
+                    principles that frame views and surprise around each bend, these pathways encourage mindfulness
+                    and
+                    discovery amid landscaped spaces.</p>
+            </div>
+            <div class='column'>
+                <h2>My Dream Garden</h2>
+                <img src='images/walkway.png' alt='Dream Garden'>
+                <p>Inspired by the Chinese Garden walkway, my dream walkway follows the original closely, keeping
+                    the
+                    winding path and framing of scenic vignettes as authentically as possible.</p>
+            </div>
+            <div class="poem">
+                Under wooden beams I softly tread,<br>
+                Steps echo where the trees have led.<br>
+                Paths align beside the pond,<br>
+                Nature's whispers, a gentle bond.
+            </div>
+        </div>
+        <div class='back-button'>
+            <a href="#" class="back">Back to Map</a>
+        </div>
     </div>
 
     <script>
-        const toggle = document.getElementById('toggleNodes');
+        const splash = document.getElementById('splash');
+        const bgMusic = document.getElementById('bgMusic');
+        const map = document.getElementById('map');
+
+        const toggleContainer = document.querySelector('.toggle-container');
+        const toggleNodes = document.getElementById('toggleNodes');
+        const toggleMusic = document.getElementById('toggleMusic');
         const nodes = document.querySelectorAll('.node');
-        toggle.addEventListener('change', () => {
+        const sections = document.querySelectorAll('.section');
+        const backButtons = document.querySelectorAll('.back');
+
+        // Split the toggle containers
+        const nodeToggleWrapper = toggleNodes.parentElement.parentElement; // node toggle only
+        const musicToggleWrapper = toggleMusic.parentElement.parentElement; // music toggle only
+
+        // Initially hide map and node toggle
+        map.style.display = 'none';
+        nodeToggleWrapper.style.display = 'none';
+        nodes.forEach(node => node.style.display = 'none');
+
+        // Splash click: hide splash, show map, show node toggle, play music if music toggle is on
+        splash.addEventListener('click', () => {
+            splash.style.display = 'none';
+            map.style.display = 'block';
+            nodeToggleWrapper.style.display = 'flex'; // show node toggle only on main page
+            if (toggleMusic.checked) bgMusic.play();
+        });
+
+        // Toggle node visibility
+        toggleNodes.addEventListener('change', () => {
             nodes.forEach(node => {
-                node.style.display = toggle.checked ? 'flex' : 'none';
+                node.style.display = toggleNodes.checked ? 'flex' : 'none';
+            });
+        });
+
+        // Toggle music mute/unmute
+        toggleMusic.addEventListener('change', () => {
+            bgMusic.muted = !toggleMusic.checked;
+            if (toggleMusic.checked) {
+                if (bgMusic.paused) bgMusic.play();
+            }
+        });
+
+        // Show section on node click
+        nodes.forEach(node => {
+            node.addEventListener('click', () => {
+                const target = node.getAttribute('data-target');
+                map.style.display = 'none';
+                nodeToggleWrapper.style.display = 'none'; // hide node toggle in sections
+                sections.forEach(section => section.style.display = 'none');
+                const section = document.getElementById(target);
+                if (section) section.style.display = 'flex';
+            });
+        });
+
+        // Back to map
+        backButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                sections.forEach(section => section.style.display = 'none');
+                map.style.display = 'block';
+                nodeToggleWrapper.style.display = 'flex'; // show node toggle again
             });
         });
     </script>
