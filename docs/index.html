@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chinese Garden</title>
     <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
     <style>
@@ -14,23 +14,21 @@
             color: #fff;
         }
 
+        /* POEM: now uses flex layout (no absolute positioning) to avoid overlap */
         .poem {
             font-family: 'Satisfy', cursive;
             /* easier to read cursive */
             font-size: 24px;
             color: #eee;
-            margin-top: 0px;
+            margin: 0;
             line-height: 1.8;
 
-
-            /* Positioned to the right of the section and vertically centered */
-            position: absolute;
-            right: 50px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 220px;
+            /* Become a flex child (fixed-width column) */
+            width: 240px;
+            flex: 0 0 240px;
+            align-self: center;
             text-align: left;
-
+            padding-left: 10px;
         }
 
         .section {
@@ -50,6 +48,8 @@
             gap: 40px;
             max-width: 1200px;
             width: 100%;
+            align-items: center;
+            /* keep poem vertically centered with columns */
         }
 
         .column {
@@ -258,6 +258,26 @@
 
         input:checked+.slider:before {
             transform: translateX(26px);
+        }
+
+        /* Responsive: stack columns + poem under on small screens to avoid overlap */
+        @media (max-width: 900px) {
+            .garden-map {
+                width: 92%;
+            }
+
+            .container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .poem {
+                width: 100%;
+                flex: 0 0 auto;
+                padding-left: 0;
+                text-align: center;
+                margin-top: 12px;
+            }
         }
     </style>
 </head>
